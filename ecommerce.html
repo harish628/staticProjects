@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NovaMart – Premium E-Commerce</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0a0b0f;--card:#12141a;--card2:#1a1d27;--border:rgba(255,255,255,.07);--accent:#7c5cfc;--accent2:#fc5c7d;--text:#e8eaf0;--muted:#8b8fa8;--r:16px;--t:.3s cubic-bezier(.4,0,.2,1)}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+    a{text-decoration:none;color:inherit}img{display:block;max-width:100%}
+    .container{width:90%;max-width:1200px;margin:0 auto}
+    section{padding:100px 0}
+    .badge{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:6px 14px;border-radius:100px;background:rgba(124,92,252,.15);border:1px solid rgba(124,92,252,.35);color:#a98bfd;margin-bottom:16px}
+    .sec-title{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,3.5vw,2.7rem);font-weight:800;line-height:1.2;margin-bottom:14px}
+    .sec-sub{color:var(--muted);font-size:1.05rem;max-width:540px}
+    .btn{display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-weight:600;font-size:.88rem;border-radius:100px;cursor:pointer;transition:all var(--t);border:none}
+    .btn-ghost{padding:9px 20px;background:transparent;border:1px solid var(--border);color:var(--muted)}
+    .btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+    .btn-primary{padding:10px 22px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 20px rgba(124,92,252,.35)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,92,252,.5)}
+    .btn-lg{padding:15px 32px;font-size:.95rem}
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+
+    /* HEADER */
+    header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,11,15,.82);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
+    nav{display:flex;align-items:center;justify-content:space-between;height:70px}
+    .logo{font-size:1.45rem;font-weight:800;background:linear-gradient(135deg,#a98bfd,#fc5c7d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .nav-links{display:flex;gap:34px;list-style:none}
+    .nav-links a{font-size:.9rem;font-weight:500;color:var(--muted);transition:color var(--t);position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--accent);border-radius:2px;transition:width var(--t)}
+    .nav-links a:hover{color:var(--text)}.nav-links a:hover::after{width:100%}
+    .nav-cta{display:flex;align-items:center;gap:14px}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px}
+
+    /* HERO */
+    #hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;padding:0}
+    #hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(124,92,252,.18) 0%,transparent 70%),radial-gradient(ellipse 50% 50% at 85% 75%,rgba(252,92,125,.12) 0%,transparent 60%),url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1800&auto=format&fit=crop') center/cover no-repeat;z-index:0}
+    #hero::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,11,15,.94) 40%,rgba(10,11,15,.6) 100%);z-index:1}
+    .hero-content{position:relative;z-index:2;max-width:660px}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:#a98bfd;margin-bottom:22px}
+    .hero-eyebrow span{width:30px;height:1px;background:#a98bfd}
+    .hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.6rem,6vw,4.2rem);font-weight:800;line-height:1.12;margin-bottom:22px}
+    .hero-title .hl{background:linear-gradient(90deg,#a98bfd,#fc5c7d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-sub{font-size:1.12rem;color:var(--muted);margin-bottom:38px;max-width:500px}
+    .hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+    .hero-stats{position:absolute;right:4%;top:50%;transform:translateY(-50%);z-index:2;display:flex;flex-direction:column;gap:16px}
+    .stat-card{background:rgba(18,20,26,.87);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--r);padding:18px 24px;text-align:center;min-width:130px;animation:float 4s ease-in-out infinite;transition:border-color var(--t)}
+    .stat-card:nth-child(2){animation-delay:1.3s}.stat-card:nth-child(3){animation-delay:2.6s}
+    .stat-card:hover{border-color:var(--accent)}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+    .stat-num{font-size:1.7rem;font-weight:800;background:linear-gradient(135deg,#a98bfd,#fc5c7d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .stat-lbl{font-size:.75rem;color:var(--muted);margin-top:3px}
+
+    /* MARQUEE */
+    .marquee-strip{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:16px 0}
+    .marquee-track{display:flex;gap:56px;white-space:nowrap;animation:marquee 24s linear infinite}
+    .marquee-item{display:flex;align-items:center;gap:10px;font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);flex-shrink:0}
+    .mdot{width:5px;height:5px;background:var(--accent);border-radius:50%}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+    /* PRODUCTS */
+    #products{background:var(--bg)}
+    .sec-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:56px;flex-wrap:wrap;gap:20px}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px}
+    .product-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:transform var(--t),border-color var(--t),box-shadow var(--t);cursor:pointer}
+    .product-card:hover{transform:translateY(-6px);border-color:rgba(124,92,252,.4);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+    .pimg{position:relative;overflow:hidden;aspect-ratio:1/1;background:var(--card2)}
+    .pimg img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+    .product-card:hover .pimg img{transform:scale(1.08)}
+    .ptag{position:absolute;top:12px;left:12px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:4px 10px;border-radius:100px;background:var(--accent);color:#fff}
+    .ptag.sale{background:var(--accent2)}
+    .pwish{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(10,11,15,.7);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;transition:background var(--t),transform var(--t)}
+    .product-card:hover .pwish{background:rgba(252,92,125,.2);transform:scale(1.1)}
+    .pinfo{padding:18px 20px 20px}
+    .pcat{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:6px}
+    .pname{font-weight:700;font-size:1rem;margin-bottom:8px}
+    .prating{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);margin-bottom:14px}
+    .stars{color:#fbbf24}
+    .pfooter{display:flex;align-items:center;justify-content:space-between}
+    .pprice{font-weight:800;font-size:1.2rem;background:linear-gradient(135deg,#a98bfd,#fc5c7d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .pold{font-size:.82rem;color:var(--muted);text-decoration:line-through;margin-left:6px;-webkit-text-fill-color:var(--muted)}
+    .btn-cart{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:1.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform var(--t),box-shadow var(--t)}
+    .btn-cart:hover{transform:scale(1.12);box-shadow:0 6px 18px rgba(124,92,252,.5)}
+
+    /* ABOUT */
+    #about{background:var(--card);position:relative;overflow:hidden}
+    #about::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(124,92,252,.07) 0%,transparent 70%);pointer-events:none}
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+    .mosaic{position:relative;height:460px}
+    .mimg{position:absolute;border-radius:var(--r);overflow:hidden;border:3px solid var(--card2);transition:transform var(--t)}
+    .mimg img{width:100%;height:100%;object-fit:cover}
+    .mimg:hover{transform:scale(1.03)}
+    .mimg.a{width:64%;height:68%;top:0;left:0}
+    .mimg.b{width:50%;height:54%;bottom:0;right:0}
+    .mbadge{position:absolute;bottom:30px;left:-16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:14px;padding:14px 20px;text-align:center;box-shadow:0 10px 30px rgba(124,92,252,.4);z-index:2}
+    .mbn{font-size:1.8rem;font-weight:800;line-height:1}
+    .mbl{font-size:.75rem;opacity:.85}
+    .avalues{display:flex;flex-direction:column;gap:18px;margin-top:30px}
+    .vitem{display:flex;gap:16px;align-items:flex-start}
+    .vicon{flex-shrink:0;width:44px;height:44px;border-radius:12px;background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.25);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+    .vtext strong{display:block;font-weight:700;margin-bottom:3px}
+    .vtext p{font-size:.88rem;color:var(--muted)}
+
+    /* FEATURES */
+    #features{background:var(--bg)}
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px;margin-top:56px}
+    .feat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:32px 28px;position:relative;overflow:hidden;transition:transform var(--t),border-color var(--t),box-shadow var(--t)}
+    .feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform var(--t)}
+    .feat-card:hover{transform:translateY(-5px);border-color:rgba(124,92,252,.35);box-shadow:0 16px 44px rgba(0,0,0,.35)}
+    .feat-card:hover::before{transform:scaleX(1)}
+    .ficon{width:54px;height:54px;border-radius:14px;background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.25);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:22px}
+    .feat-card h3{font-size:1.05rem;font-weight:700;margin-bottom:10px}
+    .feat-card p{font-size:.88rem;color:var(--muted);line-height:1.7}
+
+    /* TESTIMONIALS */
+    #testimonials{background:var(--card);position:relative;overflow:hidden}
+    .t-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;margin-top:56px}
+    .tcard{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:30px;transition:transform var(--t),border-color var(--t)}
+    .tcard:hover{transform:translateY(-4px);border-color:rgba(124,92,252,.3)}
+    .tq{font-size:2rem;line-height:1;margin-bottom:14px;background:linear-gradient(135deg,#a98bfd,#fc5c7d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .ttxt{font-size:.92rem;color:var(--muted);line-height:1.8;margin-bottom:22px}
+    .tauthor{display:flex;align-items:center;gap:12px}
+    .tavatar{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--accent)}
+    .tname{font-weight:700;font-size:.9rem}
+    .trole{font-size:.77rem;color:var(--muted)}
+
+    /* NEWSLETTER */
+    #newsletter{padding:80px 0;background:linear-gradient(135deg,rgba(124,92,252,.12),rgba(252,92,125,.08));border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .nl-inner{display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap}
+    .nl-text h2{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;margin-bottom:10px}
+    .nl-text p{color:var(--muted);font-size:.95rem}
+    .nl-form{display:flex;gap:10px;flex-wrap:wrap}
+    .nl-input{flex:1;min-width:240px;padding:13px 20px;border-radius:100px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;outline:none;transition:border-color var(--t)}
+    .nl-input::placeholder{color:var(--muted)}
+    .nl-input:focus{border-color:var(--accent)}
+
+    /* FOOTER */
+    footer{background:var(--card);border-top:1px solid var(--border);padding:72px 0 0}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;padding-bottom:60px}
+    .fbrand .logo{margin-bottom:16px;display:inline-block}
+    .fbrand p{font-size:.88rem;color:var(--muted);line-height:1.75;max-width:240px;margin-bottom:24px}
+    .socials{display:flex;gap:10px}
+    .soc{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:background var(--t),border-color var(--t),transform var(--t)}
+    .soc:hover{background:rgba(124,92,252,.15);border-color:var(--accent);transform:translateY(-2px)}
+    .fcol h4{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px}
+    .fcol ul{list-style:none}.fcol li{margin-bottom:10px}
+    .fcol a{font-size:.88rem;color:var(--muted);transition:color var(--t)}.fcol a:hover{color:var(--text)}
+    .fbot{border-top:1px solid var(--border);padding:24px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .fbot p{font-size:.82rem;color:var(--muted)}
+    .pays{display:flex;gap:8px}
+    .pay{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.72rem;font-weight:700;color:var(--muted)}
+
+    /* SCROLL TOP */
+    #scrollTop{position:fixed;bottom:28px;right:28px;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(10px);z-index:999;box-shadow:0 4px 20px rgba(124,92,252,.4);transition:opacity var(--t),transform var(--t),box-shadow var(--t)}
+    #scrollTop.show{opacity:1;transform:translateY(0)}
+    #scrollTop:hover{box-shadow:0 8px 28px rgba(124,92,252,.6);transform:translateY(-3px)}
+
+    /* RESPONSIVE */
+    @media(max-width:960px){.about-grid{grid-template-columns:1fr;gap:48px}.mosaic{height:340px}.footer-grid{grid-template-columns:1fr 1fr}.hero-stats{display:none}}
+    @media(max-width:720px){.nav-links,.nav-cta{display:none}.hamburger{display:flex}.footer-grid{grid-template-columns:1fr}.sec-hdr{flex-direction:column;align-items:flex-start}}
+    @media(max-width:480px){section{padding:72px 0}.mbadge{left:0}}
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="container">
+    <a href="#hero" class="logo">NovaMart</a>
+    <ul class="nav-links">
+      <li><a href="#products">Shop</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#testimonials">Reviews</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-ghost">Sign In</a>
+      <a href="#" class="btn btn-primary">&#128722; Cart <span style="background:rgba(255,255,255,.25);border-radius:100px;padding:1px 7px;font-size:.78rem">3</span></a>
+    </div>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+</header>
+
+<section id="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow"><span></span> New Season Arrivals 2025</div>
+      <h1 class="hero-title">Discover Products<br>That Define <span class="hl">Your Style</span></h1>
+      <p class="hero-sub">Explore our curated collection of premium, trend-forward products crafted for those who demand quality, authenticity, and style in everything they own.</p>
+      <div class="hero-btns">
+        <a href="#products" class="btn btn-primary btn-lg">Shop Now &#8594;</a>
+        <a href="#about" class="btn btn-ghost btn-lg">Our Story</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-card"><div class="stat-num">50K+</div><div class="stat-lbl">Happy Customers</div></div>
+    <div class="stat-card"><div class="stat-num">1200+</div><div class="stat-lbl">Products Listed</div></div>
+    <div class="stat-card"><div class="stat-num">4.9 &#9733;</div><div class="stat-lbl">Avg. Rating</div></div>
+  </div>
+</section>
+
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <span class="marquee-item"><span class="mdot"></span> Free Shipping Over &#8377;999</span>
+    <span class="marquee-item"><span class="mdot"></span> New Arrivals Every Week</span>
+    <span class="marquee-item"><span class="mdot"></span> 30-Day Easy Returns</span>
+    <span class="marquee-item"><span class="mdot"></span> Secure Payments</span>
+    <span class="marquee-item"><span class="mdot"></span> Exclusive Members Deals</span>
+    <span class="marquee-item"><span class="mdot"></span> Eco-Friendly Packaging</span>
+    <span class="marquee-item"><span class="mdot"></span> Free Shipping Over &#8377;999</span>
+    <span class="marquee-item"><span class="mdot"></span> New Arrivals Every Week</span>
+    <span class="marquee-item"><span class="mdot"></span> 30-Day Easy Returns</span>
+    <span class="marquee-item"><span class="mdot"></span> Secure Payments</span>
+    <span class="marquee-item"><span class="mdot"></span> Exclusive Members Deals</span>
+    <span class="marquee-item"><span class="mdot"></span> Eco-Friendly Packaging</span>
+  </div>
+</div>
+
+<section id="products">
+  <div class="container">
+    <div class="sec-hdr reveal">
+      <div>
+        <div class="badge">&#10022; Featured Collection</div>
+        <h2 class="sec-title">Trending Right Now</h2>
+        <p class="sec-sub">Handpicked products loved by thousands of customers worldwide.</p>
+      </div>
+      <a href="#" class="btn btn-ghost">View All Products &#8594;</a>
+    </div>
+    <div class="products-grid">
+      <div class="product-card reveal">
+        <div class="pimg">
+          <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop" alt="Watch"/>
+          <span class="ptag">New</span>
+          <div class="pwish">&#129293;</div>
+        </div>
+        <div class="pinfo">
+          <div class="pcat">Accessories</div>
+          <div class="pname">Minimalist Timepiece Pro</div>
+          <div class="prating"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> 4.9 (248 reviews)</div>
+          <div class="pfooter"><div><span class="pprice">&#8377;4,999</span><span class="pold">&#8377;6,499</span></div><button class="btn-cart">+</button></div>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <div class="pimg">
+          <img src="https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=500&auto=format&fit=crop" alt="Perfume"/>
+          <span class="ptag sale">Sale</span>
+          <div class="pwish">&#129293;</div>
+        </div>
+        <div class="pinfo">
+          <div class="pcat">Beauty</div>
+          <div class="pname">Velvet Noir Perfume 100ml</div>
+          <div class="prating"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> 4.8 (172 reviews)</div>
+          <div class="pfooter"><div><span class="pprice">&#8377;2,299</span><span class="pold">&#8377;3,199</span></div><button class="btn-cart">+</button></div>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <div class="pimg">
+          <img src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=500&auto=format&fit=crop" alt="Sneakers"/>
+          <div class="pwish">&#129293;</div>
+        </div>
+        <div class="pinfo">
+          <div class="pcat">Footwear</div>
+          <div class="pname">Urban Boost Sneakers</div>
+          <div class="prating"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span> 4.7 (390 reviews)</div>
+          <div class="pfooter"><div><span class="pprice">&#8377;3,799</span></div><button class="btn-cart">+</button></div>
+        </div>
+      </div>
+      <div class="product-card reveal">
+        <div class="pimg">
+          <img src="https://images.unsplash.com/photo-1560343090-f0409e92791a?w=500&auto=format&fit=crop" alt="Sunglasses"/>
+          <span class="ptag">Hot</span>
+          <div class="pwish">&#129293;</div>
+        </div>
+        <div class="pinfo">
+          <div class="pcat">Eyewear</div>
+          <div class="pname">Retro Aviator Shades</div>
+          <div class="prating"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> 5.0 (89 reviews)</div>
+          <div class="pfooter"><div><span class="pprice">&#8377;1,499</span><span class="pold">&#8377;1,999</span></div><button class="btn-cart">+</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="mosaic reveal">
+        <div class="mimg a"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&auto=format&fit=crop" alt="Store"/></div>
+        <div class="mimg b"><img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?w=500&auto=format&fit=crop" alt="Shopping"/></div>
+        <div class="mbadge"><div class="mbn">8+</div><div class="mbl">Years of Trust</div></div>
+      </div>
+      <div class="reveal">
+        <div class="badge">&#10022; Our Story</div>
+        <h2 class="sec-title">More Than a Store &#8212; A Lifestyle Brand</h2>
+        <p class="sec-sub">NovaMart was born from a simple belief: everyone deserves access to beautiful, quality products without compromise. We partner with ethical artisans and global brands to bring you the very best.</p>
+        <div class="avalues">
+          <div class="vitem"><div class="vicon">&#127807;</div><div class="vtext"><strong>Sustainability First</strong><p>Eco-conscious packaging and carbon-neutral delivery across every order.</p></div></div>
+          <div class="vitem"><div class="vicon">&#128274;</div><div class="vtext"><strong>Authenticity Guaranteed</strong><p>Every product is 100% verified &#8212; no counterfeits, ever.</p></div></div>
+          <div class="vitem"><div class="vicon">&#128172;</div><div class="vtext"><strong>24/7 Customer Support</strong><p>Our expert team is always here to help &#8212; day or night.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <div style="text-align:center" class="reveal">
+      <div class="badge">&#10022; Why Choose Us</div>
+      <h2 class="sec-title">Built Around You</h2>
+      <p class="sec-sub" style="margin:0 auto">We are not just another online store &#8212; every step of your shopping journey is crafted with care.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card reveal"><div class="ficon">&#128640;</div><h3>Lightning-Fast Delivery</h3><p>Same-day dispatch on thousands of items. Track every step of your delivery in real time.</p></div>
+      <div class="feat-card reveal"><div class="ficon">&#128260;</div><h3>Hassle-Free Returns</h3><p>Not happy? Return anything within 30 days &#8212; no questions asked, full refund guaranteed.</p></div>
+      <div class="feat-card reveal"><div class="ficon">&#127919;</div><h3>Personalized Picks</h3><p>Our smart recommendation engine learns your style and surfaces products you will actually love.</p></div>
+      <div class="feat-card reveal"><div class="ficon">&#128737;</div><h3>Secure Checkout</h3><p>Bank-grade SSL encryption protects every transaction. Your data is always safe with us.</p></div>
+      <div class="feat-card reveal"><div class="ficon">&#128142;</div><h3>Exclusive Rewards</h3><p>Earn Nova Points on every purchase. Redeem them for big discounts and early access.</p></div>
+      <div class="feat-card reveal"><div class="ficon">&#127758;</div><h3>Global Shipping</h3><p>We deliver to 80+ countries with competitive rates and full customs handling included.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="testimonials">
+  <div class="container">
+    <div style="text-align:center" class="reveal">
+      <div class="badge">&#10022; Customer Love</div>
+      <h2 class="sec-title">What Our Shoppers Say</h2>
+      <p class="sec-sub" style="margin:0 auto">Real reviews from real people who shop with NovaMart every day.</p>
+    </div>
+    <div class="t-grid">
+      <div class="tcard reveal">
+        <div class="tq">&#10077;</div>
+        <p class="ttxt">The watch I ordered arrived beautifully packaged and exactly as described. NovaMart has completely replaced my usual shopping apps. Cannot recommend enough!</p>
+        <div class="tauthor"><img class="tavatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Priya"/><div><div class="tname">Priya Sharma</div><div class="trole">Verified Buyer &middot; Hyderabad</div></div></div>
+      </div>
+      <div class="tcard reveal">
+        <div class="tq">&#10077;</div>
+        <p class="ttxt">Returned a product with zero hassle. The refund was processed in two days. The customer service team was incredibly kind and responsive. Five stars!</p>
+        <div class="tauthor"><img class="tavatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Arjun"/><div><div class="tname">Arjun Mehta</div><div class="trole">Verified Buyer &middot; Mumbai</div></div></div>
+      </div>
+      <div class="tcard reveal">
+        <div class="tq">&#10077;</div>
+        <p class="ttxt">Every product has been authentic and premium quality. The Nova Points programme is genius &#8212; I have already redeemed for two free orders!</p>
+        <div class="tauthor"><img class="tavatar" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Ananya"/><div><div class="tname">Ananya Rao</div><div class="trole">Verified Buyer &middot; Bengaluru</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="newsletter">
+  <div class="container">
+    <div class="nl-inner reveal">
+      <div class="nl-text">
+        <h2>Get Exclusive Deals First &#127873;</h2>
+        <p>Subscribe and enjoy 15% off your first order, plus early access to flash sales.</p>
+      </div>
+      <div class="nl-form">
+        <input class="nl-input" type="email" placeholder="Enter your email address..."/>
+        <button class="btn btn-primary btn-lg">Subscribe</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="fbrand">
+        <a href="#hero" class="logo">NovaMart</a>
+        <p>Your destination for premium, trend-forward products. Delivered fast, packaged with love.</p>
+        <div class="socials">
+          <a class="soc" href="#">f</a>
+          <a class="soc" href="#">in</a>
+          <a class="soc" href="#">tw</a>
+          <a class="soc" href="#">yt</a>
+        </div>
+      </div>
+      <div class="fcol"><h4>Shop</h4><ul><li><a href="#">New Arrivals</a></li><li><a href="#">Best Sellers</a></li><li><a href="#">Sale Items</a></li><li><a href="#">Gift Cards</a></li><li><a href="#">Collections</a></li></ul></div>
+      <div class="fcol"><h4>Help</h4><ul><li><a href="#">Track Order</a></li><li><a href="#">Returns</a></li><li><a href="#">Size Guide</a></li><li><a href="#">FAQs</a></li><li><a href="#">Contact Us</a></li></ul></div>
+      <div class="fcol"><h4>Company</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
+    </div>
+    <div class="fbot">
+      <p>&#169; 2025 NovaMart. All rights reserved. Made with love in India.</p>
+      <div class="pays"><span class="pay">Visa</span><span class="pay">Mastercard</span><span class="pay">UPI</span><span class="pay">PayPal</span></div>
+    </div>
+  </div>
+</footer>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+<script>
+  var revealEls = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry, i) {
+      if (entry.isIntersecting) {
+        setTimeout(function() { entry.target.classList.add('visible'); }, i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(function(el) { observer.observe(el); });
+
+  var topBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', function() {
+    topBtn.classList.toggle('show', window.scrollY > 400);
+  });
+
+  document.querySelectorAll('.pwish').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      this.innerHTML = this.innerHTML.trim() === '&#129293;' ? '&#10084;&#65039;' : '&#129293;';
+    });
+  });
+
+  document.querySelectorAll('.btn-cart').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var b = this;
+      b.textContent = 'OK';
+      b.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+      setTimeout(function() { b.textContent = '+'; b.style.background = ''; }, 1300);
+    });
+  });
+</script>
+</body>
+</html>

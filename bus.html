@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RoadRush — Bus Booking</title>
+
+  <!-- Google Fonts: Display + Body pairing -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* =========================================================
+       CSS VARIABLES — Central design tokens
+    ========================================================= */
+    :root {
+      --bg-dark:      #0b0e14;
+      --bg-card:      #13171f;
+      --bg-card2:     #181d28;
+      --border:       rgba(255,255,255,0.07);
+      --accent:       #f5a623;
+      --accent2:      #ff6b35;
+      --text-main:    #eef0f5;
+      --text-muted:   #7a8099;
+      --text-soft:    #b0b8cc;
+      --radius:       16px;
+      --radius-sm:    10px;
+      --shadow:       0 8px 40px rgba(0,0,0,0.55);
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --transition:   0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* =========================================================
+       RESET & BASE
+    ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+      line-height: 1.65;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* =========================================================
+       REUSABLE UTILITIES
+    ========================================================= */
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(245,166,35,0.1);
+      border: 1px solid rgba(245,166,35,0.25);
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+    }
+
+    .section-title span { color: var(--accent); }
+
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--text-soft);
+      max-width: 540px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      padding: 13px 28px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(245,166,35,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 32px rgba(245,166,35,0.5);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    /* =========================================================
+       HEADER / NAV
+    ========================================================= */
+    header {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(11,14,20,0.75);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .logo-text { color: var(--text-main); }
+    .logo-text span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-soft);
+      transition: color var(--transition);
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      transform: scaleX(0);
+      transition: transform var(--transition);
+    }
+    .nav-links a:hover { color: var(--text-main); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-cta { margin-left: 8px; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--text-main);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    .mobile-nav {
+      display: none;
+      flex-direction: column;
+      gap: 0;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+    .mobile-nav a {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-soft);
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      transition: color var(--transition);
+    }
+    .mobile-nav a:last-child { border-bottom: none; }
+    .mobile-nav a:hover { color: var(--accent); }
+    .mobile-nav.open { display: flex; }
+
+    /* =========================================================
+       HERO SECTION
+    ========================================================= */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding-top: 68px;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1800&q=85&fit=crop');
+      background-size: cover;
+      background-position: center 60%;
+      z-index: -2;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        120deg,
+        rgba(11,14,20,0.97) 0%,
+        rgba(11,14,20,0.85) 50%,
+        rgba(11,14,20,0.55) 100%
+      );
+    }
+
+    .hero-orb {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,166,35,0.12) 0%, transparent 70%);
+      top: -100px; left: -150px;
+      pointer-events: none; z-index: -1;
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50%      { transform: scale(1.08); opacity: 0.7; }
+    }
+
+    .hero-content {
+      position: relative; z-index: 1;
+      max-width: 680px;
+    }
+
+    .hero-content .badge { animation: fadeUp 0.6s ease both; }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 22px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero-headline .line-gradient {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--text-soft);
+      max-width: 500px;
+      margin-bottom: 36px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 60px;
+      padding-top: 36px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+    }
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 2px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =========================================================
+       BOOKING SEARCH BAR
+    ========================================================= */
+    .booking-bar-section {
+      padding: 0 0 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .booking-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr auto;
+      gap: 16px;
+      align-items: end;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-group label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    .field-group input,
+    .field-group select {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color var(--transition), background var(--transition);
+      width: 100%;
+      appearance: none;
+    }
+
+    .field-group input::placeholder { color: var(--text-muted); }
+    .field-group input:focus,
+    .field-group select:focus {
+      border-color: var(--accent);
+      background: rgba(245,166,35,0.05);
+    }
+
+    .field-group select option { background: var(--bg-card); }
+    .booking-bar .btn { height: 46px; padding: 0 32px; white-space: nowrap; }
+
+    /* =========================================================
+       SECTION WRAPPER
+    ========================================================= */
+    section {
+      padding: 90px 0;
+      position: relative;
+    }
+
+    .section-header { margin-bottom: 52px; }
+
+    /* =========================================================
+       FEATURES SECTION
+    ========================================================= */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition);
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(245,166,35,0.3);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    }
+    .feature-card:hover::before { transform: scaleX(1); }
+
+    .feature-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: rgba(245,166,35,0.1);
+      border: 1px solid rgba(245,166,35,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .feature-card:hover .feature-icon {
+      background: rgba(245,166,35,0.2);
+      transform: rotate(-6deg) scale(1.1);
+    }
+
+    .feature-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    /* =========================================================
+       POPULAR ROUTES
+    ========================================================= */
+    .routes-section { background: var(--bg-card2); }
+
+    .routes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .route-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      height: 260px;
+      cursor: pointer;
+      transition: transform var(--transition);
+    }
+    .route-card:hover { transform: scale(1.02); }
+
+    .route-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .route-card:hover img { transform: scale(1.08); }
+
+    .route-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(11,14,20,0.95) 0%, rgba(11,14,20,0.3) 60%, transparent 100%);
+      padding: 24px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+
+    .route-tag {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+
+    .route-name {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .route-meta {
+      font-size: 0.83rem;
+      color: rgba(255,255,255,0.65);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .route-price {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+
+    /* =========================================================
+       BUS TYPES / SERVICES
+    ========================================================= */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .service-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.45);
+    }
+
+    .service-img { height: 175px; overflow: hidden; }
+    .service-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .service-card:hover .service-img img { transform: scale(1.07); }
+
+    .service-body { padding: 20px 22px; }
+    .service-body h3 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .service-body p {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .service-amenities {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px;
+    }
+    .amenity-pill {
+      font-size: 0.72rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 100px;
+      background: rgba(245,166,35,0.1);
+      color: var(--accent);
+      border: 1px solid rgba(245,166,35,0.2);
+    }
+
+    /* =========================================================
+       ABOUT / HOW IT WORKS
+    ========================================================= */
+    .about-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .about-img-wrap { position: relative; }
+    .about-img-wrap img {
+      width: 100%; border-radius: var(--radius);
+      object-fit: cover; height: 500px;
+    }
+    .about-img-badge {
+      position: absolute; bottom: 28px; left: 28px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 16px 20px;
+      backdrop-filter: blur(10px);
+      display: flex; align-items: center; gap: 14px;
+    }
+    .about-img-badge .badge-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .about-img-badge .badge-text strong {
+      font-family: var(--font-display); display: block; font-size: 1.1rem;
+    }
+    .about-img-badge .badge-text span { font-size: 0.78rem; color: var(--text-muted); }
+
+    .how-steps { display: flex; flex-direction: column; gap: 28px; margin-top: 32px; }
+    .step { display: flex; gap: 18px; align-items: flex-start; }
+    .step-num {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-weight: 800; font-size: 0.9rem; color: #fff;
+    }
+    .step-text h4 { font-family: var(--font-display); font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .step-text p { font-size: 0.87rem; color: var(--text-soft); }
+
+    /* =========================================================
+       TESTIMONIALS
+    ========================================================= */
+    .testimonials-section { background: var(--bg-card2); }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 22px;
+    }
+
+    .testi-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .testi-card:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(0,0,0,0.4); }
+
+    .testi-stars { color: var(--accent); font-size: 1rem; letter-spacing: 2px; margin-bottom: 14px; }
+    .testi-text { font-size: 0.92rem; color: var(--text-soft); line-height: 1.75; font-style: italic; margin-bottom: 20px; }
+    .testi-author { display: flex; align-items: center; gap: 12px; }
+    .testi-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(245,166,35,0.3); }
+    .testi-name { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; }
+    .testi-meta { font-size: 0.78rem; color: var(--text-muted); }
+
+    /* =========================================================
+       CTA BANNER
+    ========================================================= */
+    .cta-banner {
+      background: linear-gradient(135deg, rgba(245,166,35,0.12), rgba(255,107,53,0.08));
+      border: 1px solid rgba(245,166,35,0.2);
+      border-radius: var(--radius);
+      padding: 60px 52px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 32px; flex-wrap: wrap;
+    }
+    .cta-banner-content h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800; margin-bottom: 12px;
+    }
+    .cta-banner-content p { color: var(--text-soft); max-width: 420px; }
+    .cta-banner-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 60px 0 30px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px; margin-bottom: 48px;
+    }
+
+    .footer-brand p {
+      font-size: 0.88rem; color: var(--text-soft);
+      margin: 16px 0 24px; line-height: 1.7; max-width: 260px;
+    }
+
+    .social-links { display: flex; gap: 10px; }
+    .social-link {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem; transition: background var(--transition), border-color var(--transition);
+    }
+    .social-link:hover { background: rgba(245,166,35,0.15); border-color: rgba(245,166,35,0.4); }
+
+    .footer-col h4 {
+      font-family: var(--font-display); font-size: 0.9rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .footer-col ul a { font-size: 0.87rem; color: var(--text-soft); transition: color var(--transition); }
+    .footer-col ul a:hover { color: var(--accent); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border); padding-top: 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-bottom p { font-size: 0.82rem; color: var(--text-muted); }
+    .footer-bottom span { color: var(--accent); }
+
+    .divider { height: 1px; background: var(--border); margin: 0; }
+
+    /* =========================================================
+       SCROLL REVEAL
+    ========================================================= */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+    @media (max-width: 1024px) {
+      .booking-bar { grid-template-columns: 1fr 1fr; }
+      .booking-bar .btn { grid-column: span 2; }
+      .about-section { grid-template-columns: 1fr; }
+      .about-img-wrap img { height: 360px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .booking-bar { grid-template-columns: 1fr; }
+      .booking-bar .btn { grid-column: span 1; }
+      .cta-banner { padding: 40px 28px; flex-direction: column; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 28px; }
+    }
+
+    @media (max-width: 480px) {
+      section { padding: 60px 0; }
+      .hero-actions { flex-direction: column; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================
+       HEADER — Fixed navigation bar
+  ========================================================= -->
+  <header id="site-header">
+    <div class="container">
+      <nav>
+        <!-- Brand Logo -->
+        <a href="#" class="logo">
+          <div class="logo-icon">🚌</div>
+          <span class="logo-text">Road<span>Rush</span></span>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <ul class="nav-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#routes">Routes</a></li>
+          <li><a href="#services">Bus Types</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+
+        <!-- CTA Button + Mobile Hamburger -->
+        <a href="#booking" class="btn btn-primary nav-cta">Book Now</a>
+        <div class="hamburger" id="hamburger" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </div>
+      </nav>
+
+      <!-- Mobile Navigation Menu (hidden by default) -->
+      <div class="mobile-nav" id="mobile-nav">
+        <a href="#features">Features</a>
+        <a href="#routes">Routes</a>
+        <a href="#services">Bus Types</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="#booking" style="color:var(--accent);font-weight:700;">Book Now →</a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- =========================================================
+       HERO SECTION — Full-screen landing
+  ========================================================= -->
+  <section class="hero" id="home">
+    <!-- Background photo of a bus (Unsplash) -->
+    <div class="hero-bg"></div>
+    <!-- Glowing amber orb decoration -->
+    <div class="hero-orb"></div>
+
+    <div class="container">
+      <div class="hero-content">
+        <div class="badge">✦ India's #1 Bus Platform</div>
+
+        <h1 class="hero-headline">
+          Travel Smarter,<br>
+          <span class="line-gradient">Arrive Better.</span>
+        </h1>
+
+        <p class="hero-sub">
+          Book bus tickets to 5,000+ cities across India. Safe travel, verified operators,
+          real-time tracking and the best fares — guaranteed.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#booking" class="btn btn-primary">🔍 Search Buses</a>
+          <a href="#routes" class="btn btn-ghost">View Popular Routes →</a>
+        </div>
+
+        <!-- Key statistics strip -->
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-value">50M+</div>
+            <div class="stat-label">Happy Travellers</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">5,000+</div>
+            <div class="stat-label">Cities Covered</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">2,000+</div>
+            <div class="stat-label">Bus Operators</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">4.9★</div>
+            <div class="stat-label">Average Rating</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+       BOOKING SEARCH BAR
+  ========================================================= -->
+  <div class="booking-bar-section" id="booking">
+    <div class="container">
+      <div class="booking-bar reveal">
+
+        <!-- From City input -->
+        <div class="field-group">
+          <label>📍 From</label>
+          <input type="text" placeholder="Enter origin city" />
+        </div>
+
+        <!-- To City input -->
+        <div class="field-group">
+          <label>🏁 To</label>
+          <input type="text" placeholder="Enter destination city" />
+        </div>
+
+        <!-- Journey Date picker -->
+        <div class="field-group">
+          <label>📅 Journey Date</label>
+          <input type="date" />
+        </div>
+
+        <!-- Bus type dropdown -->
+        <div class="field-group">
+          <label>🚌 Bus Type</label>
+          <select>
+            <option value="">All Types</option>
+            <option>Sleeper AC</option>
+            <option>Sleeper Non-AC</option>
+            <option>Seater AC</option>
+            <option>Semi Sleeper</option>
+            <option>Luxury Volvo</option>
+          </select>
+        </div>
+
+        <!-- Search submit button -->
+        <button class="btn btn-primary">Search Buses</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================================================
+       FEATURES SECTION — Why choose RoadRush
+  ========================================================= -->
+  <section id="features">
+    <div class="container">
+
+      <div class="section-header reveal">
+        <div class="badge">Why RoadRush</div>
+        <h2 class="section-title">Everything You Need for a <span>Smooth Journey</span></h2>
+        <p class="section-sub">We've designed every detail of your trip to be effortless — from booking to destination.</p>
+      </div>
+
+      <!-- 6 feature cards in responsive grid -->
+      <div class="features-grid">
+
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">⚡</div>
+          <h3>Instant Confirmation</h3>
+          <p>Get your e-ticket within seconds of payment. No waiting, no calls — just instant peace of mind.</p>
+        </div>
+
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">📍</div>
+          <h3>Live Bus Tracking</h3>
+          <p>Track your bus on a live map in real-time. Know exactly where your bus is and get arrival alerts.</p>
+        </div>
+
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="feature-icon">💸</div>
+          <h3>Best Price Guarantee</h3>
+          <p>We scan all operators and guarantee the lowest fare. Found it cheaper? We'll match and beat it.</p>
+        </div>
+
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">🔒</div>
+          <h3>Secure Payments</h3>
+          <p>Bank-grade 256-bit encryption on all transactions. Pay with UPI, cards, wallets or net banking.</p>
+        </div>
+
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">🛡️</div>
+          <h3>Verified Operators</h3>
+          <p>Every bus and driver on our platform is background checked, rated, and regularly inspected.</p>
+        </div>
+
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="feature-icon">🔄</div>
+          <h3>Easy Cancellations</h3>
+          <p>Change plans? Cancel anytime with our flexible policy. Instant refund directly to your account.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <div class="divider"></div>
+
+
+  <!-- =========================================================
+       POPULAR ROUTES SECTION
+  ========================================================= -->
+  <section id="routes" class="routes-section">
+    <div class="container">
+
+      <div class="section-header reveal">
+        <div class="badge">Popular Routes</div>
+        <h2 class="section-title">Top <span>Destinations</span> This Season</h2>
+        <p class="section-sub">Thousands of travellers are booking these routes right now. Don't miss out.</p>
+      </div>
+
+      <!-- Route cards use full-bleed images with overlay text -->
+      <div class="routes-grid">
+
+        <div class="route-card reveal reveal-delay-1">
+          <img src="https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&q=80&fit=crop" alt="Delhi cityscape"/>
+          <div class="route-card-overlay">
+            <span class="route-tag">🔥 Top Seller</span>
+            <div class="route-name">Delhi → Mumbai</div>
+            <div class="route-meta"><span>🕒 18–22 hrs</span><span>📍 1,420 km</span></div>
+            <div class="route-price">From ₹799</div>
+          </div>
+        </div>
+
+        <div class="route-card reveal reveal-delay-2">
+          <img src="https://images.unsplash.com/photo-1599030179700-6dfa552d95cf?w=600&q=80&fit=crop" alt="Bangalore city"/>
+          <div class="route-card-overlay">
+            <span class="route-tag">✈ Overnight</span>
+            <div class="route-name">Bangalore → Chennai</div>
+            <div class="route-meta"><span>🕒 5–6 hrs</span><span>📍 346 km</span></div>
+            <div class="route-price">From ₹449</div>
+          </div>
+        </div>
+
+        <div class="route-card reveal reveal-delay-3">
+          <img src="https://images.unsplash.com/photo-1605640840605-14ac1855827b?w=600&q=80&fit=crop" alt="Goa beach"/>
+          <div class="route-card-overlay">
+            <span class="route-tag">🌴 Weekend</span>
+            <div class="route-name">Hyderabad → Goa</div>
+            <div class="route-meta"><span>🕒 12–14 hrs</span><span>📍 604 km</span></div>
+            <div class="route-price">From ₹699</div>
+          </div>
+        </div>
+
+        <div class="route-card reveal reveal-delay-1">
+          <img src="https://images.unsplash.com/photo-1477587458883-47145ed94245?w=600&q=80&fit=crop" alt="Mumbai skyline"/>
+          <div class="route-card-overlay">
+            <span class="route-tag">⚡ Express</span>
+            <div class="route-name">Mumbai → Pune</div>
+            <div class="route-meta"><span>🕒 3–4 hrs</span><span>📍 153 km</span></div>
+            <div class="route-price">From ₹199</div>
+          </div>
+        </div>
+
+        <div class="route-card reveal reveal-delay-2">
+          <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&q=80&fit=crop" alt="Manali mountains"/>
+          <div class="route-card-overlay">
+            <span class="route-tag">🏔 Adventure</span>
+            <div class="route-name">Delhi → Manali</div>
+            <div class="route-meta"><span>🕒 13–16 hrs</span><span>📍 545 km</span></div>
+            <div class="route-price">From ₹599</div>
+          </div>
+        </div>
+
+        <div class="route-card reveal reveal-delay-3">
+          <img src="https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=600&q=80&fit=crop" alt="Pondicherry coast"/>
+          <div class="route-card-overlay">
+            <span class="route-tag">🌊 Coastal</span>
+            <div class="route-name">Chennai → Pondicherry</div>
+            <div class="route-meta"><span>🕒 3–4 hrs</span><span>📍 170 km</span></div>
+            <div class="route-price">From ₹249</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+       BUS TYPES / SERVICES SECTION
+  ========================================================= -->
+  <section id="services">
+    <div class="container">
+
+      <div class="section-header reveal">
+        <div class="badge">Our Fleet</div>
+        <h2 class="section-title">Choose Your <span>Travel Style</span></h2>
+        <p class="section-sub">From budget-friendly seaters to premium Volvo sleepers — a bus for every journey and every budget.</p>
+      </div>
+
+      <div class="services-grid">
+
+        <!-- Sleeper AC -->
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-img">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80&fit=crop" alt="Sleeper AC bus interior" loading="lazy"/>
+          </div>
+          <div class="service-body">
+            <h3>Sleeper AC</h3>
+            <p>Fully flat berths with blankets and charging points. Sleep your way to the destination.</p>
+            <div class="service-amenities">
+              <span class="amenity-pill">❄️ AC</span>
+              <span class="amenity-pill">🛏 Berths</span>
+              <span class="amenity-pill">🔌 Charging</span>
+              <span class="amenity-pill">📶 WiFi</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Luxury Volvo -->
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-img">
+            <img src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=500&q=80&fit=crop" alt="Luxury Volvo bus" loading="lazy"/>
+          </div>
+          <div class="service-body">
+            <h3>Luxury Volvo</h3>
+            <p>Business-class comfort with panoramic windows, massage seats and gourmet snacks.</p>
+            <div class="service-amenities">
+              <span class="amenity-pill">💺 Massage Seats</span>
+              <span class="amenity-pill">🎬 Entertainment</span>
+              <span class="amenity-pill">🍱 Meals</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seater Non-AC -->
+        <div class="service-card reveal reveal-delay-3">
+          <div class="service-img">
+            <img src="https://images.unsplash.com/photo-1601933470096-0e34634ffcde?w=500&q=80&fit=crop" alt="Seater bus" loading="lazy"/>
+          </div>
+          <div class="service-body">
+            <h3>Seater Non-AC</h3>
+            <p>Comfortable reclining seats for shorter routes. The most affordable way to travel.</p>
+            <div class="service-amenities">
+              <span class="amenity-pill">💰 Budget</span>
+              <span class="amenity-pill">🪟 Window</span>
+              <span class="amenity-pill">🎒 Luggage</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Semi Sleeper -->
+        <div class="service-card reveal reveal-delay-4">
+          <div class="service-img">
+            <img src="https://images.unsplash.com/photo-1585620385456-4759f9b5c7d9?w=500&q=80&fit=crop" alt="Semi sleeper bus" loading="lazy"/>
+          </div>
+          <div class="service-body">
+            <h3>Semi Sleeper AC</h3>
+            <p>Push-back seats that recline 150°. Perfect balance of comfort and price for night travel.</p>
+            <div class="service-amenities">
+              <span class="amenity-pill">❄️ AC</span>
+              <span class="amenity-pill">🪑 Recline</span>
+              <span class="amenity-pill">🔌 USB Port</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <div class="divider"></div>
+
+
+  <!-- =========================================================
+       ABOUT / HOW IT WORKS SECTION
+  ========================================================= -->
+  <section id="about">
+    <div class="container">
+      <div class="about-section">
+
+        <!-- Left column: image with floating badge -->
+        <div class="about-img-wrap reveal">
+          <img src="https://images.unsplash.com/photo-1471948374737-21b3c5a6b436?w=700&q=85&fit=crop" alt="Traveller at bus station" loading="lazy"/>
+          <div class="about-img-badge">
+            <div class="badge-icon">🏆</div>
+            <div class="badge-text">
+              <strong>Award Winning</strong>
+              <span>Best Travel App 2024</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: steps content -->
+        <div class="about-content reveal">
+          <div class="badge">How It Works</div>
+          <h2 class="section-title">Book a Bus in <span>3 Simple Steps</span></h2>
+          <p class="section-sub">We've made the entire booking process so simple, you can do it in under a minute.</p>
+
+          <div class="how-steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-text">
+                <h4>Search Your Route</h4>
+                <p>Enter your origin, destination and travel date to instantly see all available buses, prices and timings.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-text">
+                <h4>Pick Your Seat</h4>
+                <p>Browse the live seat map, choose your preferred seat type and check real passenger reviews.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-text">
+                <h4>Pay & Travel</h4>
+                <p>Complete your secure payment and get your e-ticket instantly. Show it at boarding — you're set!</p>
+              </div>
+            </div>
+          </div>
+
+          <a href="#booking" class="btn btn-primary" style="margin-top:36px;">Start Your Journey →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+       TESTIMONIALS SECTION
+  ========================================================= -->
+  <section class="testimonials-section" id="reviews">
+    <div class="container">
+
+      <div class="section-header reveal" style="text-align:center; max-width:600px; margin:0 auto 52px;">
+        <div class="badge">Traveller Stories</div>
+        <h2 class="section-title">Loved by <span>Millions</span> of Passengers</h2>
+      </div>
+
+      <div class="testimonials-grid">
+
+        <div class="testi-card reveal reveal-delay-1">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"Booked a Delhi to Manali trip at midnight and got my e-ticket instantly. The bus was clean, on time and the tracking feature kept my family updated the whole way. Absolutely brilliant!"</p>
+          <div class="testi-author">
+            <img class="testi-avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Priya Sharma"/>
+            <div>
+              <div class="testi-name">Priya Sharma</div>
+              <div class="testi-meta">New Delhi · 34 trips booked</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-card reveal reveal-delay-2">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"The price comparison is unreal — I saved ₹400 on my Mumbai-Pune weekend trip compared to other apps. The Volvo bus had massage seats and complimentary snacks. 10/10 experience."</p>
+          <div class="testi-author">
+            <img class="testi-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Rohan Mehta"/>
+            <div>
+              <div class="testi-name">Rohan Mehta</div>
+              <div class="testi-meta">Mumbai · 22 trips booked</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-card reveal reveal-delay-3">
+          <div class="testi-stars">★★★★☆</div>
+          <p class="testi-text">"Had to cancel my Hyderabad-Goa trip last minute. Got a full refund in my account within 2 hours. Customer support was super responsive. This is how online booking should work!"</p>
+          <div class="testi-author">
+            <img class="testi-avatar" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Divya Krishnan"/>
+            <div>
+              <div class="testi-name">Divya Krishnan</div>
+              <div class="testi-meta">Hyderabad · 18 trips booked</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+       CTA / APP DOWNLOAD BANNER
+  ========================================================= -->
+  <section id="contact">
+    <div class="container">
+      <div class="cta-banner reveal">
+        <div class="cta-banner-content">
+          <h2>Ready to Hit the Road?<br>Download the <span style="color:var(--accent)">RoadRush App</span></h2>
+          <p>Get exclusive app-only deals, instant notifications and seamless booking — right in your pocket.</p>
+        </div>
+        <div class="cta-banner-actions">
+          <a href="#" class="btn btn-primary">📱 App Store</a>
+          <a href="#" class="btn btn-ghost">▶ Google Play</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+       FOOTER
+  ========================================================= -->
+  <footer>
+    <div class="container">
+
+      <!-- 4-column footer grid -->
+      <div class="footer-grid">
+
+        <!-- Brand column -->
+        <div class="footer-brand">
+          <a href="#" class="logo">
+            <div class="logo-icon">🚌</div>
+            <span class="logo-text">Road<span>Rush</span></span>
+          </a>
+          <p>India's most trusted bus booking platform. Making every journey safe, comfortable and affordable since 2019.</p>
+          <div class="social-links">
+            <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+            <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+            <a href="#" class="social-link" aria-label="Facebook">f</a>
+            <a href="#" class="social-link" aria-label="YouTube">▶</a>
+          </div>
+        </div>
+
+        <!-- Company links -->
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Partners</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+
+        <!-- Support links -->
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Cancellations</a></li>
+            <li><a href="#">Refund Policy</a></li>
+            <li><a href="#">Safety</a></li>
+            <li><a href="#">Accessibility</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact links -->
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:support@roadrush.in">support@roadrush.in</a></li>
+            <li><a href="tel:+911800001234">1800-000-1234 (Toll Free)</a></li>
+            <li><a href="#">Live Chat</a></li>
+            <li><a href="#">Twitter Support</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Copyright bar -->
+      <div class="footer-bottom">
+        <p>© 2024 <span>RoadRush Technologies Pvt. Ltd.</span> · All rights reserved.</p>
+        <p>
+          <a href="#" style="color:var(--text-muted);margin-right:20px;">Privacy Policy</a>
+          <a href="#" style="color:var(--text-muted);margin-right:20px;">Terms of Service</a>
+          <a href="#" style="color:var(--text-muted);">Cookie Policy</a>
+        </p>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- =========================================================
+       JAVASCRIPT — Interactivity
+  ========================================================= -->
+  <script>
+    // --- 1. Mobile hamburger menu toggle ---
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+
+    hamburger.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+    });
+
+    // Close mobile nav when any link is clicked
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => mobileNav.classList.remove('open'));
+    });
+
+    // --- 2. Scroll Reveal using IntersectionObserver ---
+    // Watches for elements with class "reveal" and adds "visible" when they enter view
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target); // Stop watching once revealed
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach(el => revealObserver.observe(el));
+
+    // --- 3. Header elevation shadow on scroll ---
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('site-header');
+      header.style.boxShadow = window.scrollY > 40
+        ? '0 4px 30px rgba(0,0,0,0.5)'
+        : 'none';
+    });
+
+    // --- 4. Set today as minimum date in the date picker ---
+    const dateInput = document.querySelector('input[type="date"]');
+    if (dateInput) {
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.min = today;
+      dateInput.value = today;
+    }
+  </script>
+
+</body>
+</html>

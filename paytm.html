@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Paytm – India's Payments App</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e1a;--card:#111827;--card2:#161d2e;--accent:#00baf2;--navy:#002970;--gold:#f6a623;--text:#e8eaf0;--muted:#8892a4;--border:rgba(255,255,255,0.07);--r:14px;--sh:0 8px 32px rgba(0,186,242,.12)}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}img{max-width:100%;display:block}
+
+/* ── NAVBAR ── */
+header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,14,26,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 5%}
+nav{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{font-size:1.7rem;font-weight:800;letter-spacing:-.5px}.logo .b{color:var(--accent)}
+.nav-links{display:flex;list-style:none;gap:32px}
+.nav-links a{font-size:.88rem;font-weight:500;color:var(--muted);transition:color .25s}
+.nav-links a:hover{color:var(--accent)}
+.nav-btns{display:flex;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:50px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .25s;border:none}
+.btn-outline{border:1.5px solid var(--accent);color:var(--accent);background:transparent}
+.btn-outline:hover{background:var(--accent);color:#fff}
+.btn-primary{background:linear-gradient(135deg,#00baf2,#0078d4);color:#fff;box-shadow:0 4px 18px rgba(0,186,242,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(0,186,242,.5)}
+@media(max-width:960px){.nav-links{display:none}}
+
+/* ── HERO ── */
+#hero{min-height:100vh;padding-top:68px;display:flex;align-items:center;position:relative;overflow:hidden;
+background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(0,120,212,.22) 0%,transparent 70%),
+radial-gradient(ellipse 50% 40% at 10% 80%,rgba(0,186,242,.12) 0%,transparent 60%),
+linear-gradient(160deg,#0a0e1a 0%,#0d1526 50%,#0a0e1a 100%)}
+#hero::before{content:'';position:absolute;inset:0;
+background-image:linear-gradient(rgba(0,186,242,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,186,242,.04) 1px,transparent 1px);
+background-size:60px 60px;animation:gridMove 18s linear infinite}
+@keyframes gridMove{to{background-position:60px 60px,60px 60px}}
+.hero-inner{max-width:1200px;margin:0 auto;padding:80px 5%;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:1}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(0,186,242,.1);border:1px solid rgba(0,186,242,.25);color:var(--accent);font-size:.75rem;font-weight:600;padding:6px 14px;border-radius:50px;margin-bottom:22px;text-transform:uppercase;letter-spacing:.5px}
+.hero-tag::before{content:'●';font-size:8px;animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:800;line-height:1.1;letter-spacing:-1px;margin-bottom:20px}
+.hero-title .hl{background:linear-gradient(90deg,#00baf2,#60e0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:480px;margin-bottom:36px;line-height:1.75}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap}
+.btn-lg{padding:14px 30px;font-size:.95rem}
+.hero-stats{display:flex;gap:36px;margin-top:52px;padding-top:28px;border-top:1px solid var(--border)}
+.stat h3{font-size:1.6rem;font-weight:800}.stat p{font-size:.78rem;color:var(--muted);margin-top:2px}
+.hero-visual{display:flex;justify-content:center;align-items:center;position:relative}
+.phone{width:270px;border-radius:36px;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06);animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none}
+.orb1{width:260px;height:260px;background:rgba(0,186,242,.2);top:-30px;left:10px}
+.orb2{width:200px;height:200px;background:rgba(0,41,112,.4);bottom:-20px;right:20px}
+
+/* ── SECTION COMMON ── */
+section{padding:100px 5%}
+.wrap{max-width:1200px;margin:0 auto}
+.lbl{font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.stitle{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;line-height:1.15;letter-spacing:-.5px;margin-bottom:16px}
+.ssub{font-size:1rem;color:var(--muted);max-width:560px;line-height:1.75}
+.center{text-align:center}.center .ssub{margin:0 auto}
+
+/* ── ABOUT ── */
+#about{background:linear-gradient(180deg,#0a0e1a 0%,#0d1526 100%)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;margin-top:60px}
+.aimg{position:relative;border-radius:var(--r);overflow:hidden}
+.aimg img{width:100%;height:420px;object-fit:cover;border-radius:var(--r);transition:transform .5s}
+.aimg:hover img{transform:scale(1.04)}
+.ibadge{position:absolute;bottom:20px;left:20px;background:rgba(10,14,26,.88);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px}
+.ibadge .bi{font-size:2rem}.ibadge h4{font-size:1rem;font-weight:700}.ibadge p{font-size:.75rem;color:var(--muted)}
+.points{margin-top:30px;display:flex;flex-direction:column;gap:18px}
+.point{display:flex;gap:14px;align-items:flex-start}
+.ico{width:44px;height:44px;border-radius:10px;background:rgba(0,186,242,.1);border:1px solid rgba(0,186,242,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.point h4{font-size:.95rem;font-weight:600;margin-bottom:3px}.point p{font-size:.83rem;color:var(--muted);line-height:1.5}
+
+/* ── FEATURES ── */
+#features{background:var(--bg)}
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px}
+.fc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:32px 28px;transition:transform .3s,box-shadow .3s,border-color .3s;position:relative;overflow:hidden}
+.fc::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#0078d4);transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.fc:hover::after{transform:scaleX(1)}
+.fc:hover{transform:translateY(-6px);box-shadow:var(--sh);border-color:rgba(0,186,242,.25)}
+.ci{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
+.ci.bl{background:rgba(0,186,242,.12)}.ci.gr{background:rgba(16,185,129,.12)}.ci.go{background:rgba(246,166,35,.12)}.ci.pu{background:rgba(139,92,246,.12)}.ci.re{background:rgba(239,68,68,.12)}.ci.te{background:rgba(20,184,166,.12)}
+.fc h3{font-size:1.05rem;font-weight:700;margin-bottom:10px}.fc p{font-size:.85rem;color:var(--muted);line-height:1.65}
+
+/* ── SERVICES ── */
+#services{background:linear-gradient(180deg,#0a0e1a 0%,#0d1526 60%,#0a0e1a 100%)}
+.svclayout{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:60px}
+.svclist{display:flex;flex-direction:column;gap:18px}
+.si{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;cursor:pointer;transition:all .25s}
+.si:hover{border-color:var(--accent);background:var(--card2);transform:translateX(6px)}
+.si .sico{font-size:1.8rem;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:rgba(0,186,242,.08);border-radius:12px;flex-shrink:0}
+.si h4{font-size:.95rem;font-weight:700}.si p{font-size:.8rem;color:var(--muted);margin-top:3px}
+.si .arr{margin-left:auto;color:var(--muted);font-size:1.1rem;transition:transform .2s,color .2s}
+.si:hover .arr{color:var(--accent);transform:translateX(4px)}
+.svcimg{border-radius:20px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.svcimg img{width:100%;height:500px;object-fit:cover;transition:transform .5s}
+.svcimg:hover img{transform:scale(1.04)}
+
+/* ── TESTIMONIALS ── */
+#testimonials{background:var(--bg)}
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px}
+.tc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:30px;transition:transform .3s,box-shadow .3s}
+.tc:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.stars{color:var(--gold);font-size:.9rem;margin-bottom:16px;letter-spacing:2px}
+.ttext{font-size:.9rem;color:var(--muted);line-height:1.7;margin-bottom:22px;font-style:italic}
+.ttext::before{content:'"';color:var(--accent);font-size:1.4rem;line-height:0;vertical-align:-5px;margin-right:2px}
+.rev{display:flex;align-items:center;gap:12px}
+.rev img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(0,186,242,.3)}
+.rev h5{font-size:.88rem;font-weight:700}.rev p{font-size:.75rem;color:var(--muted)}
+
+/* ── CTA BANNER ── */
+#cta{padding:80px 5%;text-align:center;position:relative;overflow:hidden;
+background:linear-gradient(135deg,#002970 0%,#005299 50%,#00baf2 100%)}
+#cta::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:rgba(255,255,255,.06);top:-200px;right:-100px}
+#cta::after{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.04);bottom:-150px;left:-80px}
+.ctac{position:relative;z-index:1}
+.ctac h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;margin-bottom:14px}
+.ctac p{font-size:1rem;opacity:.85;margin-bottom:36px}
+.btn-white{background:#fff;color:#002970;padding:14px 32px;font-size:.95rem;font-weight:700;border-radius:50px;border:none;cursor:pointer;transition:all .25s;display:inline-block}
+.btn-white:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
+
+/* ── FOOTER ── */
+footer{background:#060a14;border-top:1px solid var(--border);padding:70px 5% 30px}
+.fg2{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:50px;padding-bottom:50px;border-bottom:1px solid var(--border)}
+.fb .logo{margin-bottom:16px;font-size:1.4rem}
+.fb p{font-size:.85rem;color:var(--muted);line-height:1.7;max-width:260px}
+.socials{display:flex;gap:12px;margin-top:22px}
+.soc{width:38px;height:38px;border-radius:8px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .25s;cursor:pointer}
+.soc:hover{background:var(--accent);border-color:var(--accent)}
+.fcol h4{font-size:.9rem;font-weight:700;margin-bottom:18px}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.fcol li a{font-size:.83rem;color:var(--muted);transition:color .2s}
+.fcol li a:hover{color:var(--accent)}
+.fb2{max-width:1200px;margin:28px auto 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.fb2 p{font-size:.8rem;color:var(--muted)}
+.badges{display:flex;gap:10px}
+.badge{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:.75rem;color:var(--muted)}
+
+/* ── SCROLL TOP ── */
+.stb{position:fixed;bottom:28px;right:28px;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#00baf2,#0078d4);color:#fff;border:none;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,186,242,.4);z-index:999;transition:transform .25s,opacity .25s;opacity:0;display:flex;align-items:center;justify-content:center}
+.stb.vis{opacity:1}
+.stb:hover{transform:scale(1.12) translateY(-2px)}
+
+/* ── FADE UP ON SCROLL ── */
+.fu{opacity:0;transform:translateY(30px);transition:opacity .6s,transform .6s}
+.fu.on{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .hero-inner,.about-grid,.svclayout{grid-template-columns:1fr;text-align:center}
+  .hero-sub,.ssub{margin:0 auto}
+  .hero-actions,.hero-stats{justify-content:center}
+  .hero-visual{display:none}
+  .fg,.tg{grid-template-columns:repeat(2,1fr)}
+  .fg2{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .fg,.tg{grid-template-columns:1fr}
+  .fg2{grid-template-columns:1fr;gap:36px}
+  .hero-stats{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header>
+<nav>
+  <a href="#" class="logo"><span class="b">Pay</span>tm</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a href="#" class="btn btn-outline">Log in</a>
+    <a href="#" class="btn btn-primary">Get App</a>
+  </div>
+</nav>
+</header>
+
+<!-- HERO SECTION -->
+<section id="hero">
+<div class="hero-inner">
+  <div>
+    <div class="hero-tag">Trusted by 350 Million+ Users</div>
+    <h1 class="hero-title">India's Most<br/>Trusted <span class="hl">Payments</span><br/>Platform</h1>
+    <p class="hero-sub">Send money instantly, pay bills, recharge, shop, invest and do much more — all in one powerful app. Secure, fast, and always available.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn btn-primary btn-lg">Download Now 📲</a>
+      <a href="#features" class="btn btn-outline btn-lg">Explore Features</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><h3>350M+</h3><p>Active Users</p></div>
+      <div class="stat"><h3>₹5Cr+</h3><p>Transactions/Day</p></div>
+      <div class="stat"><h3>99.9%</h3><p>Uptime SLA</p></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="orb orb1"></div><div class="orb orb2"></div>
+    <img class="phone" src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&q=80" alt="App"/>
+  </div>
+</div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about">
+<div class="wrap">
+  <p class="lbl fu">Who We Are</p>
+  <h2 class="stitle fu">Powering the Digital<br/>Economy of India</h2>
+  <p class="ssub fu">Founded in 2010, Paytm began as a mobile recharge platform and has grown into India's leading digital financial services company.</p>
+  <div class="about-grid">
+    <div class="aimg fu">
+      <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=700&q=80" alt="Digital Payments"/>
+      <div class="ibadge"><span class="bi">🏆</span><div><h4>#1 Payments App</h4><p>India's Most Downloaded</p></div></div>
+    </div>
+    <div class="fu">
+      <h3 class="stitle" style="font-size:1.9rem;margin-bottom:24px;">Why 350 Million People<br/>Choose Paytm</h3>
+      <div class="points">
+        <div class="point"><div class="ico">🔒</div><div><h4>Bank-grade Security</h4><p>256-bit encryption and multi-layer authentication keeps every transaction safe.</p></div></div>
+        <div class="point"><div class="ico">⚡</div><div><h4>Lightning Fast Transfers</h4><p>UPI payments processed in under 2 seconds, 24/7 across all Indian banks.</p></div></div>
+        <div class="point"><div class="ico">🌐</div><div><h4>Works Everywhere</h4><p>Accepted at 20 million+ merchant outlets online and offline across India.</p></div></div>
+        <div class="point"><div class="ico">🎁</div><div><h4>Rewards on Every Pay</h4><p>Earn Paytm Cash, discounts, and exclusive offers every time you transact.</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section id="features">
+<div class="wrap">
+  <div class="center">
+    <p class="lbl fu">What We Offer</p>
+    <h2 class="stitle fu">Everything You Need,<br/>In One App</h2>
+    <p class="ssub fu">From payments to investments — Paytm is your complete financial companion.</p>
+  </div>
+  <div class="fg">
+    <div class="fc fu"><div class="ci bl">💸</div><h3>UPI Money Transfer</h3><p>Send and receive money instantly using UPI, bank transfer, or Paytm wallet — zero fees, 24/7.</p></div>
+    <div class="fc fu"><div class="ci gr">📱</div><h3>Mobile Recharge</h3><p>Recharge any mobile, DTH, or datacard in seconds with the best cashback on every recharge.</p></div>
+    <div class="fc fu"><div class="ci go">🧾</div><h3>Bill Payments</h3><p>Pay electricity, water, gas, broadband, insurance and 100+ other bills without leaving the app.</p></div>
+    <div class="fc fu"><div class="ci pu">📈</div><h3>Investments</h3><p>Invest in mutual funds, stocks, gold, and fixed deposits with expert-curated portfolios.</p></div>
+    <div class="fc fu"><div class="ci re">🎫</div><h3>Travel & Events</h3><p>Book flights, trains, buses, hotels and movie tickets at the best prices, instantly.</p></div>
+    <div class="fc fu"><div class="ci te">🏦</div><h3>Paytm Bank</h3><p>Open a zero-balance savings account, earn interest, get a free VISA debit card with cashback.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- SERVICES SECTION -->
+<section id="services">
+<div class="wrap">
+  <p class="lbl fu">For Businesses</p>
+  <h2 class="stitle fu">Grow Your Business<br/>With Paytm for Business</h2>
+  <p class="ssub fu">Accept payments, manage payroll, get loans and analytics — all the tools your business needs.</p>
+  <div class="svclayout">
+    <div class="svclist fu">
+      <div class="si"><div class="sico">🔖</div><div><h4>Payment Gateway</h4><p>Integrate Paytm PG on your website or app in minutes</p></div><span class="arr">→</span></div>
+      <div class="si"><div class="sico">📊</div><div><h4>Business Analytics</h4><p>Real-time dashboard with sales, revenue &amp; insights</p></div><span class="arr">→</span></div>
+      <div class="si"><div class="sico">💳</div><div><h4>Paytm Soundbox</h4><p>Instant payment confirmation with smart audio alerts</p></div><span class="arr">→</span></div>
+      <div class="si"><div class="sico">🏧</div><div><h4>Business Loans</h4><p>Get working capital up to ₹5 Lakhs in 24 hours</p></div><span class="arr">→</span></div>
+      <div class="si"><div class="sico">📋</div><div><h4>Payroll &amp; HR</h4><p>Automate salary disbursements and compliance</p></div><span class="arr">→</span></div>
+    </div>
+    <div class="svcimg fu">
+      <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=700&q=80" alt="Business"/>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- TESTIMONIALS SECTION -->
+<section id="testimonials">
+<div class="wrap">
+  <div class="center">
+    <p class="lbl fu">What Users Say</p>
+    <h2 class="stitle fu">Loved by Millions</h2>
+    <p class="ssub fu">Real reviews from real users who rely on Paytm every day.</p>
+  </div>
+  <div class="tg">
+    <div class="tc fu"><div class="stars">★★★★★</div><p class="ttext">I've been using Paytm for 6 years. The UPI transfers are instant and the interface keeps getting better. Absolute must-have app!</p><div class="rev"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""/><div><h5>Arjun Sharma</h5><p>Software Engineer, Bangalore</p></div></div></div>
+    <div class="tc fu"><div class="stars">★★★★★</div><p class="ttext">Managing my small shop became so easy with Paytm for Business. The Soundbox is a game-changer for instant confirmations!</p><div class="rev"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""/><div><h5>Priya Nair</h5><p>Boutique Owner, Kochi</p></div></div></div>
+    <div class="tc fu"><div class="stars">★★★★☆</div><p class="ttext">Started investing in mutual funds through Paytm Money last year. Clean UI, excellent returns tracking, and zero commission!</p><div class="rev"><img src="https://randomuser.me/api/portraits/men/68.jpg" alt=""/><div><h5>Rahul Verma</h5><p>Financial Analyst, Mumbai</p></div></div></div>
+  </div>
+</div>
+</section>
+
+<!-- CTA BANNER -->
+<section id="cta">
+<div class="ctac">
+  <h2>Start Your Digital Payment Journey Today</h2>
+  <p>Join 350 million+ Indians who trust Paytm for every payment, every day.</p>
+  <a href="#" class="btn-white">Download the App — It's Free ↓</a>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+<div class="fg2">
+  <div class="fb">
+    <div class="logo"><span class="b">Pay</span>tm</div>
+    <p>India's leading payments and financial services platform, empowering millions of consumers and merchants.</p>
+    <div class="socials"><div class="soc">🐦</div><div class="soc">📘</div><div class="soc">📸</div><div class="soc">▶️</div></div>
+  </div>
+  <div class="fcol"><h4>Company</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Newsroom</a></li><li><a href="#">Careers</a></li><li><a href="#">Investors</a></li><li><a href="#">Blog</a></li></ul></div>
+  <div class="fcol"><h4>Products</h4><ul><li><a href="#">Paytm UPI</a></li><li><a href="#">Paytm Wallet</a></li><li><a href="#">Paytm Bank</a></li><li><a href="#">Paytm Money</a></li><li><a href="#">Paytm Insurance</a></li></ul></div>
+  <div class="fcol"><h4>Support</h4><ul><li><a href="#">Help Centre</a></li><li><a href="#">Contact Us</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="#">Security</a></li></ul></div>
+</div>
+<div class="fb2">
+  <p>© 2025 Paytm (One97 Communications Ltd.) — Practice Page for Educational Purposes</p>
+  <div class="badges"><span class="badge">🔒 256-bit SSL</span><span class="badge">🇮🇳 Made in India</span><span class="badge">RBI Regulated</span></div>
+</div>
+</footer>
+
+<button class="stb" id="stb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// Scroll-to-top button
+const stb=document.getElementById('stb');
+window.addEventListener('scroll',()=>stb.classList.toggle('vis',scrollY>400));
+
+// Fade-up animations on scroll
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:.12});
+document.querySelectorAll('.fu').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
