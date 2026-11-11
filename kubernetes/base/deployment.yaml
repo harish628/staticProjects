@@ -24,7 +24,7 @@ spec:
       containers:
         - name: html-app
           # Replaced by Kustomize "images:" in each overlay
-          image: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/html-app:latest
+          image: 430398381271.dkr.ecr.ap-southeast-2.amazonaws.com/statichtmlpages:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

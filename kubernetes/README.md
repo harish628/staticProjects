@@ -6,7 +6,7 @@ overlays/dev     1 replica, namespace dev
 overlays/prod    HPA + PDB, bigger limits, namespace prod
 
 ## Before you start
-1. Replace the ECR URI (newName) and newTag in overlays/dev and overlays/prod kustomization.yaml.
+1. ECR URI is set to statichtmlpages; update newTag in overlays/dev and overlays/prod per release.
 2. Confirm container port in base/deployment.yaml (80 for plain nginx).
 3. EKS nodes pull from ECR via the node IAM role (AmazonEC2ContainerRegistryReadOnly).
 

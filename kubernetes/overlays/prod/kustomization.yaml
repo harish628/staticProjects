@@ -7,9 +7,8 @@ resources:
   - hpa.yaml
   - pdb.yaml
 images:
-  - name: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/html-app
-    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/html-app   # <- your real ECR URI
-    newTag: v1.0.0
+  - name: 430398381271.dkr.ecr.ap-southeast-2.amazonaws.com/statichtmlpages
+    newTag: v1                       # change per release (never use :latest)
 patches:
   - target:
       kind: Deployment
