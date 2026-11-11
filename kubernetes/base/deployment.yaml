@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: html-app
 spec:
-  replicas: 2
+  replicas: 5
   revisionHistoryLimit: 5            # keeps last 5 ReplicaSets for rollbacks
   selector:
     matchLabels:
