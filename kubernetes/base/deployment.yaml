@@ -24,7 +24,7 @@ spec:
       containers:
         - name: html-app
           # Replaced by Kustomize "images:" in each overlay
-          image: 430398381271.dkr.ecr.ap-southeast-2.amazonaws.com/statichtmlpages:flight-v1
+          image: 430398381271.dkr.ecr.ap-southeast-2.amazonaws.com/statichtmlpages:v1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
