@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: html-app
+  labels:
+    app.kubernetes.io/name: html-app
+spec:
+  replicas: 2
+  revisionHistoryLimit: 5            # keeps last 5 ReplicaSets for rollbacks
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: html-app
+  strategy:                          # Strategy #1: Rolling update (default)
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1                    # 1 extra pod during rollout
+      maxUnavailable: 0              # never drop below desired replicas
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: html-app
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: html-app
+          # Replaced by Kustomize "images:" in each overlay
+          image: 430398381271.dkr.ecr.ap-southeast-2.amazonaws.com/statichtmlpages:flight-v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80      # use 8080 if your image is nginx-unprivileged
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          readinessProbe:            # controls when pod receives traffic
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:             # restarts pod if it hangs
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          lifecycle:
+            preStop:                 # lets LB drain before nginx stops
+              exec:
+                command: ["sh", "-c", "sleep 5"]
+          # Hardening: enable only if your image runs as non-root
+          # (e.g. nginxinc/nginx-unprivileged on port 8080)
+          # securityContext:
+          #   runAsNonRoot: true
+          #   allowPrivilegeEscalation: false
+          #   capabilities:
+          #     drop: ["ALL"]
+      topologySpreadConstraints:     # spread pods across nodes
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: html-app

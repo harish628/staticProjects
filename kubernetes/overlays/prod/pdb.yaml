@@ -1,0 +1,10 @@
+# Keeps pods available during node drains/upgrades
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: html-app
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: html-app

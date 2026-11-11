@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: prod
+resources:
+  - namespace.yaml
+  - ../../base
+  - hpa.yaml
+  - pdb.yaml
+images:
+  - name: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/html-app
+    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/html-app   # <- your real ECR URI
+    newTag: v1.0.0
+patches:
+  - target:
+      kind: Deployment
+      name: html-app
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: 500m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 256Mi

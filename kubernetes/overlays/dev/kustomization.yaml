@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: dev
+resources:
+  - namespace.yaml
+  - ../../base
+images:
+  - name: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/html-app
+    newName: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/html-app   # <- your real ECR URI
+    newTag: v1.0.0                   # change per release (never use :latest)
+replicas:
+  - name: html-app
+    count: 1
