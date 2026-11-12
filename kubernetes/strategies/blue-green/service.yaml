@@ -9,7 +9,7 @@ spec:
   type: LoadBalancer
   selector:
     app.kubernetes.io/name: html-app
-    version: blue                    # <- the switch
+    version: green                   # <- the switch
   ports:
     - name: http
       port: 80
