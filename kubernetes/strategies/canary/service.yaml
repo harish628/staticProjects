@@ -1,0 +1,16 @@
+# Selects ALL pods with the app label (stable + canary), so traffic is
+# spread across both in proportion to their pod counts.
+apiVersion: v1
+kind: Service
+metadata:
+  name: html-app
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: html-app     # note: no "track" label here
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

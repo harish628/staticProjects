@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: html-app-canary
+  labels:
+    app.kubernetes.io/name: html-app
+    track: canary
+spec:
+  replicas: 1                       # traffic share ~ replicas / total replicas
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: html-app
+      track: canary
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: html-app    # Service matches on this label only
+        track: canary
+    spec:
+      containers:
+        - name: html-app
+          image: 430398381271.dkr.ecr.ap-southeast-2.amazonaws.com/statichtmlpages:flight-v1
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 200m, memory: 128Mi }
+          readinessProbe:
+            httpGet: { path: /, port: http }
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /, port: http }
+            initialDelaySeconds: 10
+            periodSeconds: 10
