@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: html-app
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    # Exact traffic split, independent of pod counts. Change the weights to shift traffic.
+    alb.ingress.kubernetes.io/actions.weighted-routing: |
+      {
+        "type": "forward",
+        "forwardConfig": {
+          "targetGroups": [
+            { "serviceName": "html-app-stable", "servicePort": 80, "weight": 90 },
+            { "serviceName": "html-app-canary", "servicePort": 80, "weight": 10 }
+          ]
+        }
+      }
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: weighted-routing      # must match the "actions.<name>" annotation
+                port:
+                  name: use-annotation      # required literal value

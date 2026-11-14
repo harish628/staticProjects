@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: html-app
+  labels:
+    app.kubernetes.io/name: html-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: html-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: html-app
+    spec:
+      containers:
+        - name: html-app
+          image: 430398381271.dkr.ecr.ap-southeast-2.amazonaws.com/statichtmlpages:v1
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 200m, memory: 128Mi }
+          readinessProbe:
+            httpGet: { path: /, port: http }
+            initialDelaySeconds: 3
+            periodSeconds: 5
