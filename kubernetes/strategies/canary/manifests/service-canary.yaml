@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: staticpages-canary
+  namespace: staticpages
+spec:
+  type: ClusterIP
+  selector:
+    app: staticpages
+  ports:
+    - port: 80
+      targetPort: 80

@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: staticpages
+  namespace: staticpages
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: staticpages
+  template:
+    metadata:
+      labels:
+        app: staticpages
+    spec:
+      containers:
+        - name: web
+          # Stable now. To start canary, change tag to flight-v1 and push.
+          image: 430398381271.dkr.ecr.ap-southeast-2.amazonaws.com/statichtmlpages:imbus-v1
+          ports:
+            - containerPort: 80   # confirm your image listens on 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+  strategy:
+    canary:
+      stableService: staticpages-stable
+      canaryService: staticpages-canary
+      trafficRouting:
+        alb:
+          ingress: staticpages-ingress
+          servicePort: 80
+      steps:
+        - setWeight: 10
+        - pause: {}                 # manual promote
+        - setWeight: 25
+        - pause: { duration: 60s }
+        - setWeight: 50
+        - pause: { duration: 60s }
+        - setWeight: 100
